@@ -113,18 +113,70 @@ Run inference to get started as follows:
 cd src
 python predict.py --imgA_path {imgA_path} --imgB_path {imgB_path} --mask_save_path ./CDmask.png
 ```
-You can modify `--checkpoint` of `Change_Perception.define_args()` in `predict.py`. Then you can use your own model, or download the pretrained model `MCI_model.pth` from [Hugging Face](https://huggingface.co/lcybuaa/Change-Agent/tree/main) and place it in `./models_ckpt/`.
+You can specify a custom checkpoint with `--checkpoint /path/to/model.pth`. Download the pretrained model `MCI_model.pth` from [Hugging Face](https://huggingface.co/lcybuaa/Change-Agent/tree/main) and place it in `./models_ckpt/`.
 
 ## ADK Agent
 
-<!-- TODO: Add ADK agent setup and usage instructions once src/adk_app/ is added -->
-
-Coming soon — Google ADK + Gemini 2.0 agent with Streamlit chat UI for interactive change interpretation.
+This fork replaces the original lagent-based agent with [Google ADK](https://google.github.io/adk-docs/) + Gemini, providing a conversational interface for change detection and interpretation.
 
 <br>
 <div align="center">
       <img src="resource/overview_agent.png" width="800"/>
 </div>
+<br>
+
+### Setup
+
+1. **Configure environment variables:**
+
+```bash
+cp src/adk_app/.env.example src/adk_app/.env
+```
+
+Edit `src/adk_app/.env` and set your GCP project:
+```env
+GOOGLE_GENAI_USE_VERTEXAI=TRUE
+GOOGLE_CLOUD_PROJECT=your-gcp-project
+GOOGLE_CLOUD_LOCATION=us-central1
+GEMINI_MODEL=gemini-2.5-flash
+```
+
+2. **Authenticate with Google Cloud:**
+
+```bash
+gcloud auth application-default login
+```
+
+3. **Download the pretrained model** (if not already done):
+
+Download `MCI_model.pth` from [Hugging Face](https://huggingface.co/lcybuaa/Change-Agent/tree/main) and place it in `./src/models_ckpt/`.
+
+### Run the app
+
+```bash
+cd src
+streamlit run adk_app/app.py
+```
+
+Upload a pair of before/after satellite images (sample images are provided in `resource/sample_images/`) and ask the agent about changes. The agent supports multi-turn conversation:
+
+- *"What changed between these images?"* — runs detection + captioning
+- *"How many buildings changed?"* — retrieves cached statistics
+- *"Show me just the roads"* — saves a road-only change map
+
+### Configuration reference
+
+All settings are in `src/adk_app/.env`:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `GOOGLE_CLOUD_PROJECT` | — | Your GCP project ID |
+| `GOOGLE_CLOUD_LOCATION` | `us-central1` | GCP region |
+| `GEMINI_MODEL` | `gemini-2.5-flash` | Gemini model for the agent |
+| `GEMINI_MODEL_OPTIONS` | `gemini-2.5-flash,gemini-2.5-pro` | Models shown in sidebar dropdown |
+| `MODEL_CHECKPOINT` | `./models_ckpt/MCI_model.pth` | Path to MCI model weights |
+| `VOCAB_PATH` | `./data/LEVIR_MCI` | Path to vocabulary/tokens directory |
+| `GPU_ID` | `-1` (CPU) | GPU device ID, `-1` for CPU |
 
 ## Citation
 If you find this paper useful in your research, please consider citing:

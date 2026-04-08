@@ -13,3 +13,7 @@ env.bak/
 venv.bak/
 
 src/data/LEVIR-MCI/*
+src/data/LEVIR_MCI/*
+src/models_ckpt/*
+
+tmp_uploads/
