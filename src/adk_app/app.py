@@ -4,7 +4,6 @@ from pathlib import Path
 from typing import Dict, Any
 
 import streamlit as st
-from streamlit.logger import get_logger
 
 
 CURRENT_DIR = Path(__file__).resolve().parent       # .../src/adk_app
@@ -54,11 +53,6 @@ def render_action(action: Dict[str, Any]):
                 with c2:
                     st.metric("Buildings Changed", stats.get("buildings", 0))
 
-            # any additional images saved by tools
-            # for k, v in result.items():
-            #     if isinstance(v, str) and v.lower().endswith((".png", ".jpg", ".jpeg")) and os.path.exists(v):
-            #         st.image(v, caption=Path(v).name)
-
 
 def render_assistant(agent_return: Dict[str, Any]):
     with st.chat_message("assistant"):
@@ -82,7 +76,6 @@ def save_uploaded(file, dest_dir: Path) -> str:
 def main():
     st.set_page_config(layout="wide", page_title=PAGE_TITLE, page_icon=PAGE_ICON)
     st.header(f"{PAGE_ICON} :blue[{PAGE_TITLE}]", divider="rainbow")
-    logger = get_logger(__name__)
 
     # --- Sidebar ---
     st.sidebar.title("Configuration")
@@ -100,7 +93,7 @@ def main():
     )
 
     if st.sidebar.button("Clear conversation"):
-        for k in ["history", "assistant", "user", "adk_agent"]:
+        for k in ["assistant", "user", "adk_agent"]:
             if k in st.session_state:
                 del st.session_state[k]
         st.rerun()
@@ -117,7 +110,6 @@ def main():
             st.session_state["adk_agent"].ensure_session()
         st.session_state["assistant"] = []
         st.session_state["user"] = []
-        st.session_state["history"] = []
 
     agent: ADKChangeAgent = st.session_state["adk_agent"]
 

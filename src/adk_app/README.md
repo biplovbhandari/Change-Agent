@@ -1,5 +1,7 @@
 # ADK Change Detection Agent
 
+![Demo](../../resource/demo.gif)
+
 A conversational AI agent for satellite imagery change detection, built with [Google ADK](https://google.github.io/adk-docs/) and Gemini.
 
 ## Files

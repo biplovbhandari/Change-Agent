@@ -1,12 +1,11 @@
 """
-ADK bridge for Change-Agent
-- Multi-turn Agent using Google ADK
-- Tools:
-    1) detect_changes(image_a_path?, image_b_path?, output_path?)
-    2) get_last_statistics()
-    3) save_road_change_map(save_path)
-    4) set_image_paths(image_a_path, image_b_path)
-- Returns a dict shaped
+ADK bridge for Change-Agent — multi-turn agent using Google ADK.
+
+Tools:
+    1) set_image_paths(image_a_path, image_b_path)
+    2) detect_changes(image_a_path?, image_b_path?, output_path?)
+    3) get_last_statistics()
+    4) save_road_change_map(save_path)
 """
 
 from __future__ import annotations
@@ -51,6 +50,7 @@ class CDArgs:
     n_layers: int = 3
     decoder_n_layers: int = 1
     feature_dim: int = 512
+
 
 class ChangeEngine:
     """Wraps Change_Perception with convenience + memory."""
@@ -148,7 +148,6 @@ class ADKChangeAgent:
         self.user_id = user_id
         self.session_id = session_id
 
-        # Define tools (unchanged)
         def set_image_paths(image_a_path: str, image_b_path: str) -> dict:
             """Registers (and remembers) the two input image paths for later turns."""
             return self.engine.set_image_paths(image_a_path, image_b_path)
@@ -242,7 +241,6 @@ class ADKChangeAgent:
             sid = result.get("id")
         if sid:
             self.session_id = sid
-
 
     # --- Helper (ui can call directly) ---
     def register_images(self, a: str, b: str):
